@@ -15,16 +15,16 @@ The aim is to connect the probability models to the PyTorch and NumPy code used 
 
 | File | Topic | Main representation |
 | --- | --- | --- |
-| [`01_gamex_continuous_transformer.ipynb`](01_gamex_continuous_transformer.ipynb) | Continuous autoregressive Transformer | Daily returns, Gaussian and Student-$t$ heads |
-| [`02_gamex_hawkes_cascades.ipynb`](02_gamex_hawkes_cascades.ipynb) | Marked Hawkes process of extremes | Event times with marks on the limit set |
-| [`03_gamex_cascade_estimation.ipynb`](03_gamex_cascade_estimation.ipynb) | Estimating and generating real cascades | Extreme days of three stock indices |
+| [`02_gamex_continuous_transformer.ipynb`](02_gamex_continuous_transformer.ipynb) | Continuous autoregressive Transformer | Daily returns, Gaussian and Student-$t$ heads |
+| [`03_gamex_hawkes_cascades.ipynb`](03_gamex_hawkes_cascades.ipynb) | Marked Hawkes process of extremes | Event times with marks on the limit set |
+| [`04_gamex_cascade_estimation.ipynb`](04_gamex_cascade_estimation.ipynb) | Estimating and generating real cascades | Extreme days of three stock indices |
 
 ### Helper modules
 
 The notebooks hold the models, the calls and the results; the machinery sits in three modules beside them, which you are welcome to open.
 
 | Module | Contents |
-| --- | --- | --- |
+| --- | --- |
 | [`gamex_returns.py`](gamex_returns.py) | Data loading, the GamexCoin generator, training helpers, figures and the generation animation |
 | [`gamex_cascades.py`](gamex_cascades.py) | The gauge and its surfaces, the von Mises-Fisher sampler, the `Process` class, EM, the gauge likelihood, the real-data pipeline and three animations |
 | [`gamex_transformer.py`](gamex_transformer.py) | Sequences, `GaugeNet`, `CascadeTransformer`, the loss, training, sampling and the generation animation |
@@ -92,9 +92,9 @@ jupyter lab
 Open the notebooks in order:
 
 ```text
-01_gamex_continuous_transformer.ipynb
-02_gamex_hawkes_cascades.ipynb
-03_gamex_cascade_estimation.ipynb
+02_gamex_continuous_transformer.ipynb
+03_gamex_hawkes_cascades.ipynb
+04_gamex_cascade_estimation.ipynb
 ```
 
 Run the first code cell to confirm the installed PyTorch version and loaded compute device. Keep the notebooks in the same folder as the three `gamex_*.py` modules and the `data` folder; nothing is downloaded during the session.
@@ -103,6 +103,6 @@ Run the first code cell to confirm the installed PyTorch version and loaded comp
 
 ## Data
 
-`data/indices.csv` holds the daily closes of the S&P 500, the DAX and the Nikkei on their 9,009 common trading days, 1988 to 2026. Notebook 1 uses the S&P 500 column; notebook 3 uses all three. Notebook 2 simulates its own data from a known truth.
+`data/indices.csv` holds the daily closes of the S&P 500, the DAX and the Nikkei on their 9,009 common trading days, 1988 to 2026. The continuous Transformer uses the S&P 500 column and the cascade estimation uses all three. The Hawkes notebook simulates its own data from a known truth.
 
 ---
