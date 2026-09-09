@@ -4,8 +4,7 @@
 **The University of Edinburgh · 8-11 September 2026** <br>
 [GAMEX Summer School website](https://gamex-network.github.io/school/)
 
-This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile and [**Johnny Myung Won Lee
-**](https://johnnymdoubleu.github.io), The University of Edinburgh.
+This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile and [**Johnny Myung Won Lee**](https://johnnymdoubleu.github.io), The University of Edinburgh.
 
 The practical continues the session's Transformer, now over continuous values, and uses it on a process in which every event is an extreme event.
 The aim is to connect the probability models to the PyTorch and NumPy code used to simulate, estimate, generate from, and diagnose them.
