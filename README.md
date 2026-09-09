@@ -65,8 +65,8 @@ A **CPU is sufficient** for the practical. The largest model has about 120,000 p
 Clone the repository and create a virtual environment:
 
 ```bash
-git clone https://github.com/clementeferrer/GAMEX_summer_school_cascades.git
-cd GAMEX_summer_school_cascades
+git clone https://github.com/gamex-network/gamex_summer_school_cascades.git
+cd gamex_summer_school_cascades
 
 python -m venv gamex
 ```
