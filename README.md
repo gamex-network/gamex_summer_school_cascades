@@ -4,14 +4,10 @@
 **The University of Edinburgh · 8-11 September 2026** <br>
 [GAMEX Summer School website](https://gamex-network.github.io/school/)
 
-This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile.
+This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile and [**Johnny Myung Won Lee
+**](https://johnnymdoubleu.github.io), The University of Edinburgh.
 
-The practical continues the session's Transformer, now over continuous values, and uses it on a process in which every event is an extreme event:
-
-1. a **continuous Transformer** whose head outputs the parameters of a density,
-2. a **marked Hawkes process of extremes**, whose cascades are latent, and
-3. the **Transformer as an estimator** of that process on three real stock indices.
-
+The practical continues the session's Transformer, now over continuous values, and uses it on a process in which every event is an extreme event.
 The aim is to connect the probability models to the PyTorch and NumPy code used to simulate, estimate, generate from, and diagnose them.
 
 ---
@@ -23,8 +19,6 @@ The aim is to connect the probability models to the PyTorch and NumPy code used 
 | [`01_gamex_continuous_transformer.ipynb`](01_gamex_continuous_transformer.ipynb) | Continuous autoregressive Transformer | Daily returns, Gaussian and Student-$t$ heads |
 | [`02_gamex_hawkes_cascades.ipynb`](02_gamex_hawkes_cascades.ipynb) | Marked Hawkes process of extremes | Event times with marks on the limit set |
 | [`03_gamex_cascade_estimation.ipynb`](03_gamex_cascade_estimation.ipynb) | Estimating and generating real cascades | Extreme days of three stock indices |
-
-The three notebooks continue the session's numbering as Practicals 3, 4 and 5.
 
 ### Helper modules
 
@@ -113,13 +107,3 @@ Run the first code cell to confirm the installed PyTorch version and loaded comp
 `data/indices.csv` holds the daily closes of the S&P 500, the DAX and the Nikkei on their 9,009 common trading days, 1988 to 2026. Notebook 1 uses the S&P 500 column; notebook 3 uses all three. Notebook 2 simulates its own data from a known truth.
 
 ---
-
-## Runtimes
-
-| Notebook | Runtime | Heaviest step |
-| --- | --- | --- |
-| 1 | about 30 seconds | Twelve epochs on 7,194 windows |
-| 2 | about 15 seconds | Three animations |
-| 3 | about 3 minutes | Thirty epochs on 3,185 simulated cascades |
-
-The notebooks ship with their outputs, so every figure and animation can be read before running anything.
