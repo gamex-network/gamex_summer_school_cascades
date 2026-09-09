@@ -23,11 +23,11 @@ The aim is to connect the probability models to the PyTorch and NumPy code used 
 
 The notebooks hold the models, the calls and the results; the machinery sits in three modules beside them, which you are welcome to open.
 
-| Module | Used by | Contents |
+| Module | Contents |
 | --- | --- | --- |
-| [`gamex_returns.py`](gamex_returns.py) | Notebook 1 | Data loading, the GamexCoin generator, training helpers, figures and the generation animation |
-| [`gamex_cascades.py`](gamex_cascades.py) | Notebooks 2 and 3 | The gauge and its surfaces, the von Mises-Fisher sampler, the `Process` class, EM, the gauge likelihood, the real-data pipeline and three animations |
-| [`gamex_transformer.py`](gamex_transformer.py) | Notebook 3 | Sequences, `GaugeNet`, `CascadeTransformer`, the loss, training, sampling and the generation animation |
+| [`gamex_returns.py`](gamex_returns.py) | Data loading, the GamexCoin generator, training helpers, figures and the generation animation |
+| [`gamex_cascades.py`](gamex_cascades.py) | The gauge and its surfaces, the von Mises-Fisher sampler, the `Process` class, EM, the gauge likelihood, the real-data pipeline and three animations |
+| [`gamex_transformer.py`](gamex_transformer.py) | Sequences, `GaugeNet`, `CascadeTransformer`, the loss, training, sampling and the generation animation |
 
 ---
 
