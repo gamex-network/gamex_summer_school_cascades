@@ -4,9 +4,9 @@
 **The University of Edinburgh · 8-11 September 2026** <br>
 [GAMEX Summer School website](https://gamex-network.github.io/school/)
 
-This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile and [**Johnny Myung Won Lee**](https://johnnymdoubleu.github.io), The University of Edinburgh.
+This repository contains materials for a 2-hour practical session on **Multivariate extremes, cascades and simulation** with PyTorch by [**Clemente Ferrer**](https://github.com/clementeferrer), Pontificia Universidad Católica de Chile and [**Johnny Myung Won Lee**](https://johnnymdoubleu.github.io), the University of Edinburgh.
 
-The practical continues the session's Transformer, now over continuous values, and uses it on a process in which every event is an extreme event.
+The practical continues the session's transformer, now over continuous values, and uses it on a process in which every event is an extreme event.
 The aim is to connect the probability models to the PyTorch and NumPy code used to simulate, estimate, generate from, and diagnose them.
 
 ---
@@ -15,9 +15,10 @@ The aim is to connect the probability models to the PyTorch and NumPy code used 
 
 | File | Topic | Main representation |
 | --- | --- | --- |
-| [`02_gamex_continuous_transformer.ipynb`](02_gamex_continuous_transformer.ipynb) | Continuous autoregressive Transformer | Daily returns, Gaussian and Student-$t$ heads |
+| [`01_gamex_continuous_transformer.ipynb`](01_gamex_cascading_extremes_autoregressive.ipynb) | Discrete autoregressive transformer | Rule-based Tokenized categorical token process |
+| [`02_gamex_continuous_transformer.ipynb`](02_gamex_continuous_transformer.ipynb) | Continuous autoregressive transformer | Daily returns, Gaussian and Student-$t$ heads |
 | [`03_gamex_hawkes_cascades.ipynb`](03_gamex_hawkes_cascades.ipynb) | Marked Hawkes process of extremes | Event times with marks on the limit set |
-| [`04_gamex_cascade_estimation.ipynb`](04_gamex_cascade_estimation.ipynb) | Estimating and generating real cascades | Extreme days of three stock indices |
+| [`04_gamex_cascade_estimation.ipynb`](04_gamex_cascade_estimation.ipynb) | Estimating and generating real cascades | Extreme days o f three stock indices |
 
 ### Helper modules
 
