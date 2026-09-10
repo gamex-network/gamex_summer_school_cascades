@@ -80,12 +80,17 @@ def train_on(make_model, loader, loss_fn, n_epochs=10, seed=20260908, device="cp
     return net
 
 
-def own_sigma_exceedances(net, inputs, targets, k=4.0, device="cpu"):
+def standardised_residuals(net, inputs, targets, device="cpu"):
     net.eval()
     with torch.inference_mode():
         mu, log_sigma = net(inputs.to(device))
-    z = (targets[:, -1] - mu[:, -1].cpu()) / torch.exp(log_sigma[:, -1]).cpu()
-    return int((z.abs() > k).sum()), len(z)
+    # one residual per window, on its last day: how many of its own sigmas that day was
+    return ((targets[:, -1] - mu[:, -1].cpu()) / torch.exp(log_sigma[:, -1]).cpu()).numpy()
+
+
+def own_sigma_exceedances(net, inputs, targets, k=4.0, device="cpu"):
+    z = standardised_residuals(net, inputs, targets, device=device)
+    return int((np.abs(z) > k).sum()), len(z)
 
 
 # ---------------------------------------------------------------------------
@@ -195,5 +200,72 @@ def animate_continuation(context, mus, sigmas, draws, start_label, limit=14.0, i
         return generated_line, status_text
 
     animation = FuncAnimation(fig, update, frames=n_generated, interval=interval, repeat=False, blit=False)
+    plt.close(fig)
+    display(HTML(animation.to_jshtml()))
+
+
+def price_path(returns, last_price=100.0):
+    # returns are daily log-returns in per cent, so a price path is their exponentiated cumulative sum
+    cumulative = np.cumsum(np.asarray(returns, dtype=float)) / 100.0
+    return last_price * np.exp(cumulative - cumulative[-1])          # today's price is last_price
+
+
+def animate_prices(history, futures, last_price=100.0, interval=220, colour="#c9a227"):
+    history = price_path(history, last_price)
+    paths = last_price * np.exp(np.cumsum(np.asarray(futures, dtype=float), axis=1) / 100.0)
+    n_paths, horizon = paths.shape
+    past_days = np.arange(-len(history) + 1, 1)
+    future_days = np.arange(1, horizon + 1)
+    # a log axis so that halving and doubling are the same distance, and nothing is clipped
+    low = 0.9 * min(paths.min(), history.min())
+    high = 1.1 * max(paths.max(), history.max())
+
+    # ---- layout: the price on the left, where it may end up on the right ----
+    fig = plt.figure(figsize=(11, 4.6))
+    gs = fig.add_gridspec(nrows=1, ncols=2, width_ratios=[2.6, 1.0], wspace=0.06)
+    ax_price = fig.add_subplot(gs[0, 0])
+    ax_end = fig.add_subplot(gs[0, 1], sharey=ax_price)
+    ax_price.plot(past_days, history, linewidth=1.4, color="0.25", label="Observed")
+    ax_price.axhline(last_price, color="0.6", linestyle="--", linewidth=1.0, label="Today's price")
+
+    # ---- animated artists ----
+    lines = [ax_price.plot([], [], linewidth=0.7, alpha=0.35, color=colour)[0] for _ in range(n_paths)]
+    median_line, = ax_price.plot([], [], linewidth=2.2, color="#8a6d1f", label="Median of the futures")
+    ax_price.set_yscale("log")
+    ax_price.set_xlim(past_days[0], horizon + 1)
+    ax_price.set_ylim(low, high)
+    ax_price.set_yticks([10, 25, 50, 100, 200, 400])
+    ax_price.get_yaxis().set_major_formatter(plt.ScalarFormatter())
+    ax_price.set_xlabel("Trading days from today")
+    ax_price.set_ylabel(f"GMX price, today = {last_price:g} (log scale)")
+    ax_price.grid(alpha=0.2)
+    ax_price.legend(loc="lower left", fontsize=9)
+    edges = np.geomspace(low, high, 45)
+    counts = np.stack([np.histogram(paths[:, k], bins=edges)[0] for k in range(horizon)])
+    centres = np.sqrt(edges[:-1] * edges[1:])
+    bars = ax_end.barh(centres, np.zeros(len(centres)), height=np.diff(edges), color=colour, alpha=0.75)
+    ax_end.axhline(last_price, color="0.6", linestyle="--", linewidth=1.0)
+    ax_end.set_xlim(0, 1.05 * counts.max())      # fixed, so the distribution is seen to spread
+    ax_end.set_xlabel("Futures per bin")
+    ax_end.set_title("Price on that day")
+    ax_end.grid(alpha=0.2)
+    plt.setp(ax_end.get_yticklabels(), visible=False)
+
+    def update(frame):
+        upto = slice(0, frame + 1)
+        for line, path in zip(lines, paths):
+            line.set_data(future_days[upto], path[upto])
+        median_line.set_data(future_days[upto], np.median(paths[:, upto], axis=0))
+        for bar, count in zip(bars, counts[frame]):
+            bar.set_width(count)
+        column = paths[:, frame]
+        ax_price.set_title(f"Day {frame + 1}/{horizon}"
+                           f"    median {np.median(column):.0f}"
+                           f"    above today {100.0 * np.mean(column > last_price):.0f}%"
+                           f"    halved {100.0 * np.mean(column < last_price / 2.0):.0f}%"
+                           f"    doubled {100.0 * np.mean(column > 2.0 * last_price):.0f}%")
+        return lines + [median_line] + list(bars)
+
+    animation = FuncAnimation(fig, update, frames=horizon, interval=interval, repeat=False, blit=False)
     plt.close(fig)
     display(HTML(animation.to_jshtml()))

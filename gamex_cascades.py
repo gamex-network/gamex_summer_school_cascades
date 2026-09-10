@@ -181,6 +181,16 @@ def tree_layout(par):
     return y
 
 
+PALETTE = ["C0", "C1", "C2", "C3", "C4", "C5", "C6", "C8", "C9"]   # C7 is grey, reserved
+
+
+def cascade_colours(window):
+    # families ranked by their first event, so colours agree across figures and animations
+    order = window.groupby("cascade")["t"].min().sort_values().index
+    colour_of = {c: PALETTE[k % len(PALETTE)] for k, c in enumerate(order)}
+    return np.array([colour_of[c] for c in window["cascade"]], dtype=object)
+
+
 def local_parents(block):
     position = {e: i for i, e in enumerate(block["event"])}
     return np.array([position.get(par_id, -1) for par_id in block["parent"]])
@@ -488,14 +498,13 @@ def animate_genealogy(events, T, n_frames=20, interval=600):
 
     # ---- one lane of tree rows per cascade ----
     cas = window["cascade"].to_numpy()
+    colour = cascade_colours(window)
     y = np.zeros(len(window))
-    colour = np.empty(len(window), dtype=object)
     base = 0.0
-    for k, c in enumerate(window.groupby("cascade")["t"].min().sort_values().index):
+    for c in window.groupby("cascade")["t"].min().sort_values().index:
         rows = np.flatnonzero(cas == c)
         local = {r: j for j, r in enumerate(rows)}
         y[rows] = base + tree_layout(np.array([local.get(par_row[r], -1) for r in rows]))
-        colour[rows] = f"C{k % 10}"
         base = y[rows].max() + 2.0
 
     t_w, r_w = window["t"].to_numpy(), window["r"].to_numpy()
@@ -516,6 +525,37 @@ def animate_genealogy(events, T, n_frames=20, interval=600):
         ax.set_yticks([])
         ax.set_xlabel(r"Time $t$")
         ax.set_ylabel("One colour per family")
+        ax.set_title(f"t = {t_now:4.1f}: {int(sel.sum())} events in {len(np.unique(cas[sel]))} families")
+        return ()
+
+    _show(FuncAnimation(fig, update, frames=n_frames, interval=interval, repeat=False, blit=False), fig)
+
+
+def animate_cascade_cloud(events, T, surface, n_frames=20, interval=600):
+    window = events[events["t"] <= T].reset_index(drop=True)
+    par_row = local_parents(window)
+    colour = cascade_colours(window)                 # the colours of animate_genealogy
+    cas = window["cascade"].to_numpy()
+    t_w, X_w, r_w = window["t"].to_numpy(), marks(window), window["r"].to_numpy()
+    lim = 1.1 * np.abs(X_w).max()
+
+    fig = plt.figure(figsize=(7.4, 6.0))
+    ax = fig.add_subplot(projection="3d")
+
+    def update(frame):
+        t_now = T * (frame + 1) / n_frames
+        sel = t_w <= t_now
+        ax.clear()
+        star_surface(ax, surface, colour="0.55", alpha=0.12)
+        for i in np.flatnonzero(sel):
+            j = par_row[i]
+            if j >= 0:                               # the step a family took from parent to child
+                ax.plot(X_w[[j, i], 0], X_w[[j, i], 1], X_w[[j, i], 2],
+                        color=colour[i], lw=0.6, alpha=0.45)
+        ax.scatter(X_w[sel, 0], X_w[sel, 1], X_w[sel, 2], c=list(colour[sel]),
+                   s=5 + 2.5 * r_w[sel], alpha=0.9, linewidths=0, depthshade=False)
+        ax.set_xlim(-lim, lim); ax.set_ylim(-lim, lim); ax.set_zlim(-lim, lim)
+        ax.set_xlabel(r"$x_1$"); ax.set_ylabel(r"$x_2$"); ax.set_zlabel(r"$x_3$")
         ax.set_title(f"t = {t_now:4.1f}: {int(sel.sum())} events in {len(np.unique(cas[sel]))} families")
         return ()
 
